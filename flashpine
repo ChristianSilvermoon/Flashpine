@@ -1,0 +1,32 @@
+#!/bin/bash
+# Porject: Flashpine
+# License: The Unlicense
+
+id-jump-drive-devs() {
+	# ls -1l --color=never /dev/disk/by-id/ | grep "JumpDriv_e" | grep -v "part" | grep "eMMC" | cut -d'/' -f 3
+	ls -1l --color=never /dev/disk/by-id/ | grep "JumpDriv_e" | grep -v "part" | grep "$1" | cut -d'/' -f 3 
+}
+
+arg_handle() {
+	case $1 in
+		
+		(id|list)
+			echo -e "\e[1mThe following devices most likely belong to a Pinephone running Jump Drive"
+			echo -e "\neMMC: \e[1;33m"
+			id-jump-drive-devs eMMC | sed 's/^/   /g'
+			
+			echo -e "\n\e[0;1mMicro SD: \e[1;33m"
+			id-jump-drive-devs microSD | sed 's/^/   /g'
+
+			echo -e "\n\e[0;1mPartition Details:\e[1;33m"
+			lsblk -f $(id-jump-drive-devs | sed 's/^/\/dev\//g') | sed 's/^/   /g'
+			exit
+			;;
+		*)
+			echo "Unknown argument."
+			exit 1
+			;;
+	esac
+}
+
+arg_handle "$@"
