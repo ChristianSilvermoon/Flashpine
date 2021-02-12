@@ -22,6 +22,10 @@ arg_handle() {
 			lsblk -f $(id-jump-drive-devs | sed 's/^/\/dev\//g') | sed 's/^/   /g'
 			exit
 			;;
+		(jumpdrive-shell|jdsh|jd-shell)
+			telnet 172.16.42.1
+			exit
+			;;
 		*)
 			echo "Unknown argument."
 			exit 1
